@@ -1,0 +1,119 @@
+<div style="display: flex; flex-direction: column; flex-wrap: wrap; margin-top:10px ; align-items: center;">
+  <div #carouselbanners  class="carusel-grande">
+    <div id="carousel-grande-owl" class="owl-carousel owl-theme">
+      <div class='item' *ngFor="let banner of banners" routerLink="/busqueda/ban/{{banner._id}}" ><a href="/busqueda/ban/{{banner._id}}" aria-label="Banner de búsqueda"> <img src="{{URL_IMAGENES}}/{{banner.imagen}}" alt="smarket banner {{banner.imagen}}"></a></div>
+    </div> 
+  </div> 
+ 
+  <div #carouselmarcas  class="cont-carouseles">    
+    <div style="display: flex; flex-direction: row; justify-content: left; align-items: left; width: 100%; ">
+        <h5 class="label-home">Marcas</h5>        
+
+    </div>
+  
+      <div style="width: 98%; display:flex; justify-content: center; margin-top: 15px;">
+      
+        <div id="owl-demo-marcas" class="owl-carousel owl-theme" >  
+          <div class="item-marca noseleccionable"  *ngFor="let marca of marcas;"routerLink="/busqueda/marca/{{marca._id}}" >
+              
+              <img src="{{URL_IMAGENES}}/{{marca.imagen}}" alt="smarket {{marca.imagen}}" style="width: auto; height: auto; max-height: 50px; max-width: 100%;">
+              
+          </div>  
+        </div>          
+      </div>   
+  
+    </div>
+  <div #carouselofertas  class="cont-carouseles">
+      
+
+      <div style="width: 100%;display:flex; justify-content:flex-start; ">
+          <h5 class="label-home">Ofertas Relampago</h5>        
+      </div>   
+     
+      <div style="width: 98%; display:flex; justify-content: center; margin-top: 15px;">
+        <br>
+        <div id="owl-demo-ofertas" class="owl-carousel owl-theme" >   
+          <div class="item noseleccionable"  *ngFor="let cardsimple of listaofertas;" style="width: 100%;display:flex; justify-content: center;" routerLink="/articulo/{{cardsimple.url}}">
+              <div class="simple-card noseleccionable" routerLink="/articulo/{{cardsimple.url}}">
+                  <div class="descuento porcentaje">-{{cardsimple.descuento}}%</div>   
+                <div class="img-card">
+                  <img  class="imagen-card-articulo" src="{{URL_IMAGENES}}/{{cardsimple.urlImagen}}" alt="smarket {{cardsimple.urlImagen}}">
+                </div> 
+                <div class="nombre-articulo-card">
+                  {{cardsimple.titulo}}
+                </div>
+                <div style="font-size: 12px;color: rgba(0,0,0,0.5);"><del>S/ {{cardsimple.precio | number: '1.2-2'}}</del></div>
+                <div style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{cardsimple.precio - cardsimple.descuento * cardsimple.precio / 100 | number:'1.2-2'}}</div>
+              </div>
+          </div>   
+        </div>          
+      </div>
+
+    </div> 
+    <div #carouselaccesorios  class="cont-carouseles">
+      
+        <div style="width: 100%;display:flex; justify-content:flex-start; ">
+            <h5 class="label-home">Accesorios</h5>        
+        </div>
+        <div style="width: 98%; display:flex; justify-content: center; margin-top: 15px;  ">
+            <br>
+          <div id="owl-demo-accesorios" class="owl-carousel owl-theme" >   
+              <div #carousel3 class="item noseleccionable item-accesorios" *ngFor="let largocard of listaaccesorios" routerLink="/articulo/{{largocard.url}}">
+                <div class="descuento porcentaje">-{{largocard.descuento}}%</div>   
+                <div class="item-img-accesorio">
+                    <img class="imagen-card-accesorio" src="{{URL_IMAGENES}}/{{largocard.urlImagen}}">           
+                </div>
+                <div class="detalles-item-accesorio">
+                  <div style="font-size: 12px;color: rgba(0,0,0,0.5);">Categoria</div>
+                  <div class="nombre-articulo-card">{{largocard.titulo}}</div>
+                  <div style="font-size: 12px;color: rgba(0,0,0,0.5);"><del>S/ {{largocard.precio | number: '1.2-2'}}</del></div>
+                  <div style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{largocard.precio - largocard.descuento * largocard.precio / 100 | number: '1.2-2'}}</div>
+                </div>        
+              </div> 
+          </div>          
+        </div>
+    </div>
+    
+  
+</div>
+
+  <!--
+<div class="articulo-principal" style="padding: 5px; height: 100%; ">
+
+    <div class="oferta-dia" *ngFor="let grandecard of listarcardtipo2" routerLink="/articulo/{{grandecard.link}}">
+      <div class="titulo-oferta">Oferta del Día</div>
+      <div class="descuento porcentaje">-10%</div>   
+      <div style="width: 100%;display: flex;justify-content: center;">
+        <img class="imagen-card" src="{{URL_IMAGENES}}/{{grandecard.urlImagen}}" alt="">
+      </div>
+      <div class="detalles-oferta1">
+        <div>Categoria</div>
+
+      </div>
+      <div class="nombre-art-eferta-dia">{{grandecard.titulo}}</div>
+      <div style=" display:flex; flex-direction: row; flex-wrap: wrap;">
+        <div class="descuento"><del>S/ 4500.00</del></div>
+          
+        <div class="precio">S/ {{grandecard.precioplan.precio}}</div>
+      </div>
+    </div>
+    <div class="accesorio">
+      <div class="titulo-accesorio" >Accesorios</div>
+      <div class="item-accesorios" *ngFor="let largocard of listarcardtipo3" routerLink="/articulo/{{largocard.link}}">
+        <div class="descuento porcentaje">-10%</div>   
+        <div class="item-img-accesorio">
+            <img class="imagen-card-accesorio" src="{{URL_IMAGENES}}/{{largocard.urlImagen}}">           
+        </div>
+        <div class="detalles-item-accesorio">
+          <div style="font-size: 12px;color: rgba(0,0,0,0.5);">Categoria</div>
+          <div style="font-size: 16px;font-weight: 400;color: #000000;">{{largocard.titulo}}</div>
+          <div style="font-size: 12px;color: rgba(0,0,0,0.5);"><del>S/ 475.00</del></div>
+          <div style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{largocard.precioplan.precio}}</div>
+        </div>        
+      </div>
+    </div>               
+  </div>  
+  -->
+
+  
+

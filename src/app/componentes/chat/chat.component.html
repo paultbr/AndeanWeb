@@ -1,0 +1,104 @@
+<div class="card shadow-lg bg-light contenedor-chat-prin" [hidden]="mostrarBotonChat">
+  <div class="card-header">
+    <div>
+      <div style="display: flex; flex-direction: row; align-items: center; width: 100%;">
+          <i class="material-icons" style="margin-right: 10px;">
+          chat
+          </i>
+         Chat Online
+      </div>
+      <div>
+        <i class="material-icons" (click)="minimizar()">
+            minimize
+            </i>
+      </div>
+      <div>
+        <i class="material-icons"  (click)="cerrarChat()">
+            close
+            </i>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="contenido-chat" [hidden]="!mostrarFormulario">
+      <label [innerHTML]="mensajeFormulario"></label>
+      <form class="example-form">
+        <mat-form-field [hidden]="!mostrarCampos">
+          <input matInput placeholder="Ingrese su nombre" #nombre="ngModel" [(ngModel)]="chatService.usuario.nombres"
+            [ngModelOptions]="{standalone: true}">
+        </mat-form-field>
+        <mat-form-field [hidden]="!mostrarCampos">
+          <input matInput placeholder="Ingrese su Email" #correo="ngModel" [(ngModel)]="chatService.usuario.correo"
+            [ngModelOptions]="{standalone: true}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select #tipoConsulta placeholder="Seleccione un tipo de consulta" disableRipple>
+            <mat-option value="Información">Información</mat-option>
+            <mat-option value="Ayuda para comprar">Ayuda para comprar</mat-option>
+            <mat-option value="Informe de error">Informe de error </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea matInput #consulta placeholder="Especifique la consulta" rows="6"></textarea>
+        </mat-form-field>
+      </form>
+    </div>
+    <div #chatPrincipal class="contenido-chat" [hidden]="mostrarFormulario" [style.opacity]="habilitarEnvio ? '1': '0.25'">
+      <div *ngFor="let mensaje of listaMensajesChat">
+        <div *ngIf="mensaje.autor == 'admin'" class="mensaje-admin">
+          <div class="info-mensaje">
+            <div>
+              <label>{{nombreAsesor}}</label>
+            </div>
+            <div>
+            </div>
+            <div>
+              <label> {{mensaje.tiempo | date: 'h:mma' }}</label>
+            </div>
+          </div>
+          <img class="imagen-chat" src="./assets/images/andeano.png" alt="andeano smarket">
+          <div class="item-mensaje-admin">{{mensaje.cuerpo}}</div>
+        </div>
+        <div *ngIf="mensaje.autor != 'admin' && mensaje.autor != '$unirChat'" class="mensaje-user">
+          <div class="info-mensaje">
+            <div>
+              <label> {{mensaje.tiempo | date: 'h:mma' }}</label>
+            </div>
+            <div>
+            </div>
+            <div>
+              <label>{{mensaje.autor}} </label>
+            </div>
+          </div>
+          <div class="item-mensaje-user">{{mensaje.cuerpo}} </div>
+          <img class="imagen-chat" src="./assets/images/cliente-icon.png" alt="andeano smarket">
+        </div>
+        <div *ngIf="mensaje.autor == '$unirChat'" class="mensaje-admin">
+          <div class="eventoChat">{{mensaje.cuerpo}}</div>
+        </div>
+        <div *ngIf="true">
+          {{MoverScroll(chatPrincipal)}}
+        </div>
+      </div>
+      <span id="final" style="width: 50px;"></span>
+    </div>
+    <div id="conectarChat" class="footer-chat" [hidden]="!mostrarFooter">
+      <div>
+        <button mat-raised-button color="primary" style="background-color: rgb(255, 154, 1);" (click)="iniciarChat(tipoConsulta.value, consulta.value)">Conectarse
+          al Chat</button>
+      </div>
+    </div>
+    <div id="enviarMensaje" class="footer-chat" [hidden]="mostrarFooter">
+      <div>
+        <input #inputMensaje id="inputMensaje" type="text" placeholder="Escriba su mensaje" (keypress)="enviarMensajeChat($event, inputMensaje)"
+          [hidden]="!habilitarEnvio">
+      </div>
+      <div>
+        <button><i class="fa fa-send"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="btn-chat-prin" [hidden]="!mostrarBotonChat" id="btnmostrarchat">
+  <button mat-fab color="primary" (click)="mostrarChat()" style="background-color: rgb(64, 165, 51);"><i class="fa fa-comments" style="font-size: 20px;"></i></button>
+</div>

@@ -1,0 +1,80 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 mx-auto">
+      <div class="card card-signin my-5">
+        <form #usuarioForm="ngForm" class="form-signin" (ngSubmit)="registrar(usuarioForm)" autocomplete="off">
+          <input type="hidden" name="_id" #_id="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado._id">
+          <div class="card-body">
+            <img id="btn-back" src="assets/images/back.png" alt="" routerLink="/login">
+            <h5 class="card-title text-center" style="margin-top: -25px;">
+              <img src="assets/images/new-user.png">
+              Nuevo Usuario
+            </h5>
+            <hr>
+            <mat-form-field id="nombres">
+              <input matInput placeholder="Nombre(s)" name="nombres" #nombres="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.nombres" required>
+              <mat-error *ngIf="nombres.invalid && (nombres.dirty || nombres.touched) && nombres.errors.required">
+                Por favor complete su(s) nombre(s)
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field id="apellidos">
+              <input matInput placeholder="Apellidos" name="apellidos" #apellidos="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.apellidos" required>
+              <mat-error *ngIf="apellidos.invalid && (apellidos.dirty || apellidos.touched) && apellidos.errors.required">
+                Por favor complete sus apellidos
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field id="email">
+              <input matInput type="email" autocomplete="off" placeholder="Correo Electrónico" name="correo" #correo="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.correo" email required>
+              <mat-error *ngIf="correo.invalid && (correo.dirty || correo.touched) && correo.errors.required">
+                Por favor complete su correo electrónico
+              </mat-error>
+              <mat-error *ngIf="correo.invalid && (correo.dirty || correo.touched) && correo.errors.email">
+                Su correo electrónico debe tener el formato correcto
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field id="password">
+              <input matInput type="password" autocomplete="off" placeholder="Contraseña" name="password" #password="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.password" required minlength="6">
+              <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.required">
+                Por favor complete su contraseña
+              </mat-error>
+              <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.minlength">
+                Su contraseña debe tener al menos 6 caracteres
+              </mat-error>
+            </mat-form-field>
+            <mat-checkbox  name="promociones" #promociones="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.promociones">Recibir promociones
+              </mat-checkbox>
+            <div class="form-label-group">
+              <label id="condiciones">Al registrarse acepta nuestros <a href="/terminosycondiciones" style="color: orange;">términos y condiciones</a> y nuestras <a href="/politicas">politicas de privacidad</a>.</label>
+            </div>
+          </div>
+          <div class="card-body" style="margin-top: -18px;">
+            <button class="btn btn-lg btn-secondary btn-block text-uppercase" type="submit" id="btniniciosesion">
+              Registrarse</button>
+          </div>
+          <div class="card-body" id="footer-login">
+            <div class="form-label-group">
+              <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                  <!--<label> Registrate con :</label>
+                  <button type="button" class="btn btn-default btn-circle" id="boton-facebook" aria-placeholder="Facebook"><i
+                      class="fab fa-facebook-f"></i>
+                  </button>
+                  <button type="button" class="btn btn-primary btn-circle" id="boton-google" placeholder="Google"><i
+                      class="fab fa-google"></i>
+                  </button>
+                  <button type="button" class="btn btn-success btn-circle" id="boton-twitter" placeholder="Twitter"><i
+                      class="fab fa-twitter"></i>
+                  </button>-->
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                  <label style="text-align: right" style="margin-top: 5px;">¿Ya eres usuario? <a routerLink="/login">Inicia
+                      Sesión</a></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

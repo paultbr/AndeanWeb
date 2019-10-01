@@ -1,0 +1,358 @@
+<div class="contenido">
+  <div class="breadcrumb" >
+    <a href="/home"> Inicio </a> /
+    <a href="/busqueda"> Articulos </a> /
+    <a href=""> {{articuloService.categoria ? articuloService.categoria.nombre : 'Smartphones'}} </a> /
+    <a href="/articulo/{{articuloService.articuloSeleccionado.titulo}}"> {{articuloService.articuloSeleccionado.titulo}}</a>
+  </div>
+  <div class="contenedor-articulo">
+    <div class="contenedor-articulo-det">
+      <div class="contenidor-imagenes">        
+        <div class="cont-items-img-small">              
+          <div class="item-imagen"*ngFor="let imagen of articuloService.articuloSeleccionado.imagenes"  (mouseover)="cambiar_imagen(imagen)">
+            <img class="img-item" src="{{articuloService.url_imagenes_sm}}/{{imagen}}" alt="">
+          </div>
+        </div>        
+        <div class="cont-img-select"  id="imagen-origen" (mouseover)="mouse_over()" (mouseout)="mouse_out()" (mousemove)="mouse_move($event)">   
+          <div id="lente" class="img-zoom-lens"  >
+
+          </div>
+          <img class="imagen-grande"  id="imagen-seleccionada" src="" alt="" >
+        </div>
+        <div class="cont-zoom-result"  [hidden]="ocultarZoom"  id="resultado-zoom">
+        </div>
+      </div>
+      <div class="contenedor-info-articulo">
+          <div class="name-articulo">
+              {{articuloService.articuloSeleccionado.titulo}}
+          </div>
+          <div class="valoracion">
+              <div class="valoracionPromedio"> 
+                  <img class="estrella1" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                  <img class="estrella2" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                  <img class="estrella3" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                  <img class="estrella4" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                  <img class="estrella5" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                  <div>
+                    <label class="numeroComentarios"> {{textoNumeroComentarios}} </label>    
+                </div>
+              </div>             
+          </div>
+         <!--
+           <div class="preciounitario" style="margin-top:10px; display: flex; flex-direction: row; align-items: flex-end; flex-wrap: wrap;">
+            <h6 style="width: 100%;">Precio: </h6>
+            <div style="margin-left:10px; color: black; font-size: x-large; display: flex; flex-direction: row;align-items: flex-end; font-weight: 500;">
+              <div>S/</div><div style="margin-left: 5px;"> {{planSeleccionado.precio.toFixed(2)}} </div><div style="color: rgb(132, 133, 136); font-size: medium; margin-bottom: 5px; margin-right: 3px;margin-left: 3px;"> / </div><div style="color: rgb(168, 168, 170); font-size: medium; margin-bottom: 4px;"> unidad</div>
+            </div>
+            
+
+          </div>
+         --> 
+          <div class="colores" style="margin-top:10px;">
+              <div style="font-size: 18px; border-bottom: 1px solid rgb(228, 228, 228);">Elija un opción:</div>
+            <div class="item-colores" style="display: flex; flex-direction: row; margin: 10px">
+              <div  *ngFor="let equipo of articuloService.articuloSeleccionado.equipos" (click)="seleccionarEquipo(equipo)">
+                <div *ngIf="equipo.idequipo != equipoSeleccionado.idequipo" class="item-cantidad">
+                  <img src="https://www.smarket.com.pe:3000/imagenes/sm/{{equipo.imagen}}" alt="" width="100%" height="100%">
+                </div>
+                <div *ngIf="equipo.idequipo == equipoSeleccionado.idequipo" class="item-color">
+                  <img src="https://www.smarket.com.pe:3000/imagenes/sm/{{equipo.imagen}}" alt="" width="100%" height="100%">
+                </div>
+              </div>
+              
+            </div>
+            <div>
+              <div style="font-size: 18px; border-bottom: 1px solid rgb(228, 228, 228);">Caracteristicas</div>
+              <div style="width: 100%; height: auto; margin-top: 5px;">
+                <li>Color: {{equipoSeleccionado.color}}</li>
+                <a (click)="irADetalle()" class="btndetalle">Mas Información</a>
+              </div>
+            </div>
+
+          </div>
+          <div class="cantidad" style="margin-top:10px; display: flex; flex-direction: row; align-items: center; flex-wrap: wrap;">
+              <div style="font-size: 18px; border-bottom: 1px solid rgb(228, 228, 228); width:100%; ">Cantidad</div>
+            <div style="display: flex; flex-direction: row; margin: 10px; margin-top:10px;border: 1px  solid rgb(180, 180, 180); width: 125px;align-items: center; height: 35px; border-radius: 3px;">
+              <i class="material-icons btn-cantidad noseleccionable" (click)="disminuirCantidad()">remove</i>
+              <div style="width: 80px; text-align: center;">{{cantidadSeleccionada}}</div>
+              
+              <i class="material-icons btn-cantidad noseleccionable" (click)="aumentarCantidad()" >add</i>
+            </div>
+            <div *ngIf="equipoSeleccionado.cantidad==1" style="color: rgb(112, 113, 114)"> {{equipoSeleccionado.cantidad}} unidad disponible</div>
+            <div *ngIf="equipoSeleccionado.cantidad>1" style="color: rgb(112, 113, 114)"> {{equipoSeleccionado.cantidad}} unidades disponibles</div>
+            <div *ngIf="equipoSeleccionado.cantidad==0" style="color: rgb(224, 41, 8) ; "> PRODUCTO AGOTADO</div>
+
+          </div>
+          
+         <!--
+           
+         --> <div hidden="true" class="cont-lineas" style="width: 100%; padding-left: 10px; display: flex; flex-direction: row;flex-wrap: wrap;">
+              <div class="cont-selec" >
+                  <h6 style="margin-bottom: 5px;">Tipo Linea:</h6>
+                  <div class="input-select" >
+                      <mat-select style="padding-left: 4px; padding-right: 4px;"  name="tipolinea"[(ngModel)]="tipoLineaSeleccionada" >
+                          <mat-option *ngFor="let linea of listalineas" value="{{linea.valor}}">{{linea.nombre}}</mat-option>
+                      </mat-select> 
+                  </div>
+                  
+              </div>
+              <div class="cont-select" style="width: 200px;"></div>
+              <div class="cont-selec" [hidden]="controlTipoPlan">
+                  <h6 style="margin-bottom: 5px;">Lo quiero en: </h6>
+                  <div class="input-select">
+                      <mat-select style="padding-left: 4px; padding-right: 4px;" name="tipoplan"[(ngModel)]="tipoPlanSeleccionado"  >
+                          <mat-option *ngFor="let tipo of listatipoplanes" value="{{tipo.valor}}">{{tipo.nombre}}</mat-option>
+                      </mat-select>
+                  </div>                  
+              </div>
+              <div class="cont-selec"  [hidden]="controlCuotas" >
+                  <h6 style="margin-bottom: 5px;">Pagar el equipo en:</h6>
+                  <div class="input-select">
+                      <mat-select  style="padding-left: 4px; padding-right: 4px;" name="tipocuota"[(ngModel)]="tipoCuotaSeleccionada" >
+                          <mat-option *ngFor="let cuota of listacuotasSeleccionadas" value="{{cuota.valor}}">{{cuota.nombre}}</mat-option>
+                        </mat-select>
+                  </div>
+                  
+              </div>
+            </div>
+            <div  hidden="true"class="cont-precios">
+                <div class="btn-planes" (click)="moverScrollRigth()">                
+                      <i class="material-icons" style="font-size: 35px;">chevron_left</i>                    
+                </div>
+                <div  style="width: 88%; display: flex; flex-direction: row; height: 210px; justify-content: center; align-items: center;" [hidden]="!nomostrarPrecios">
+                  <div [hidden]="hayPrecios">
+                      <mat-spinner style="width: 10px; height: 10px;"></mat-spinner>
+                  </div>
+                  <div [hidden]="!hayPrecios">
+                    <label for=""> No se encontraron precios.</label>
+                  </div>
+                  
+                </div>
+                <div id="cont-carousel"  class="contenido-planes-equipo" [hidden]="nomostrarPrecios">
+                    <div class="contenido-planes-equipo-carousel" id="contenido-planes-equipo" >
+                  
+                        <div *ngFor="let plan of listPreciosFiltro" (click)="seleccionarPlan(plan)">
+                          <mat-card class="card-planes" *ngIf="plan.nombreplan != planSeleccionado.nombreplan">
+                            <mat-card-content style="text-align: center;">
+                              <h6 style="color: gray;"><strong>{{plan.nombreplan}}</strong> </h6>
+                              
+                                <div style=" display: flex; flex-direction: column; width: 100%;justify-content: center;">
+                                  <div style="font-weight: bold; color: rgb(83, 82, 79); font-size: 12px;">Precio:</div>
+                                  <div *ngIf="plan.tipolinea=='POSTPAGO'" style="font-weight: bold; color: rgb(43, 40, 40); font-size: 17px; width: 100%;">S/ {{plan.montomes.toFixed(2)}}{{almes}}</div>
+                                  <div *ngIf="plan.tipolinea=='PREPAGO'" style="font-weight: bold; color: rgb(43, 40, 40); font-size: 17px; width: 100%;">S/ {{plan.precio.toFixed(2)}}</div>
+      
+                                </div>
+                              <!--  <div style="width: 100%;">
+                                  <button class="btn btn-link" style="color: grey">Ver Detalle Plan</button>
+                                </div>-->
+                            
+                            </mat-card-content>
+                          </mat-card> 
+      
+                          <mat-card class="card-planes-seleccionado" *ngIf="plan.nombreplan == planSeleccionado.nombreplan">
+                            <mat-card-content style="text-align: center;">
+                              <h6><strong>{{plan.nombreplan}}</strong> </h6>
+                              
+                                <div style=" display: flex; flex-direction: column; width: 100%;justify-content: center;">
+                                  <div style="font-weight: bold; color: rgb(83, 82, 79); font-size: 12px;">Precio:</div>
+                                  <div *ngIf="plan.tipolinea=='POSTPAGO'" style="font-weight: bold; color: #ff8c00; font-size: 17px; width: 100%;">S/ {{plan.montomes.toFixed(2)}}{{almes}}</div>
+                                  <div *ngIf="plan.tipolinea=='PREPAGO'" style="font-weight: bold; color: #ff8c00; font-size: 17px; width: 100%;">S/ {{plan.precio.toFixed(2)}}</div>
+      
+                                </div>
+                              <!--   <div style="width: 100%;">
+                                  <button class="btn btn-link" style="color: rgb(36, 36, 39);">Ver Detalle Plan</button>
+                                </div>-->
+                            
+                            </mat-card-content>
+                          </mat-card>  
+                        </div>       
+                </div>
+                
+                    
+                </div>
+                <div class="btn-planes" (click)="moverScroll()">
+                    <i class="material-icons" style="font-size: 35px;">chevron_right</i>
+                </div>
+            </div>  
+      </div>
+      
+      <div class="contenedor-precios">
+        <div class="contenedor-detalle-precio">
+          <div style="width: 100%; display: flex; flex-direction: column;">
+            <div *ngIf="articuloService.articuloSeleccionado.descuento >0"  style="margin-top:0px; font-size: 25px;color: #7e8285; display:flex; flex-direction: row;"> <del>
+              S/ {{(equipoSeleccionado.precioventa).toFixed(2)}} 
+            </del> 
+            <div style="margin-left: 10px;">
+              -{{articuloService.articuloSeleccionado.descuento}}%
+            </div>
+          </div>    
+              <div  style="margin-top:2px; font-size: 30px;color: #df3b3b; display: flex; flex-direction: row; align-items: flex-end; "><div>S/ {{(equipoSeleccionado.precioventa-(equipoSeleccionado.precioventa*articuloService.articuloSeleccionado.descuento/100)).toFixed(2)}}</div>  <div style="font-size: 15px; padding-bottom: 8px;">/unidad</div></div>    
+              
+              <div  style="margin-top:5px; font-size:18px;">Pago Total: S/ {{((equipoSeleccionado.precioventa-(equipoSeleccionado.precioventa*articuloService.articuloSeleccionado.descuento/100))*cantidadSeleccionada).toFixed(2) }} </div>    
+              <div  style="margin-top:5px; font-size:12px; ">* Envio gratis a Cusco,Apurimac y Madre de Dios </div>    
+          </div>
+          <!--
+<div [hidden]="nomostrarPlanesPostpago" class="detalle-precio-plan">
+              <div class="item-precio-plan">
+                  <div style="margin-right: 5px; font-size: 14px;">Plan: </div>     
+                  <div style="font-weight: bold; color: rgb(53, 53, 52); font-size: 14px; width: auto; text-align: center;">{{planSeleccionado.nombreplan}}</div>
+        
+              </div>
+            <div class="item-precio-plan">
+                <div style="margin-right: 5px;">Precio del Plan: </div>     
+                <div style="font-weight: bold; color: rgb(53, 53, 52); font-size: 12px; width: auto; text-align: center;"> S/ {{planSeleccionado.montomes.toFixed(2)}}</div>
+      
+            </div>
+            <div class="item-precio-plan">
+                <div style="margin-right: 5px;">Cuota : </div>     
+                <div  style="font-weight: bold; color: rgb(32, 32, 31); font-size: 12px; width: auto; text-align: center;"> S/ {{planSeleccionado.cuotamensual.toFixed(2)}}</div>
+    
+            </div>
+            <div class="item-precio-plan">
+              <div style="margin-right: 5px;">Pago Mensual : </div>     
+              <div  style="font-weight: bold; color: rgb(32, 32, 31); font-size: 12px; width: auto; text-align: center;"> S/ {{(planSeleccionado.montomes+planSeleccionado.cuotamensual).toFixed(2)}}</div>
+            </div>
+            <div class="item-precio-plan" *ngIf="tipoLineaSeleccionada != 'PREPAGO'">
+              <button class="btn-detalle-plan" (click)="abrirDetallesPlan()" data-toggle="modal" data-target="#modalPlan"> Ver Detalles </button>
+
+            </div>
+              
+          </div>
+          --> 
+         
+          <div class="botones-compra">
+            <!--<button class="btn-compra btn-procesar" ><i class="fa fa-credit-card"></i> Procesar Compra</button>--> 
+            <button mat-raised-button color="primary" routerLink="/pago" style="width: 100%;margin-top: 10px; height: 40px;"> <i class="material-icons">
+              credit_card
+              </i>  Procesar Compra</button>
+            <!--             <button class="btn-compra btn-agregar" (click)="agregarCarrito()" [disabled]="!habilitarBotonCarrito"> <i class="fa fa-cart-plus" style="font-size: 18px;"></i> Agregar al Carrito</button>
+ --> 
+            <button style="width: 100%; margin-top: 10px; height: 40px;" mat-raised-button  (click)="agregarCarrito()" [disabled]="!habilitarBotonCarrito"><i class="material-icons">
+              shopping_cart
+              </i> Agregar al Carrito</button>
+
+          </div>
+         
+        </div>
+
+      </div>
+    </div>
+    <div class="detalle-articulo" id="detalle-producto">      
+        <mat-tab-group style="width: 100%;"(selectedTabChange)="buscarDetallesArticulo($event)">
+          <mat-tab label="Detalles del Producto">
+              <div class="card" style="width: 100%" >
+                <div class="card-body">
+                  <h5 class="card-title"> Especificaciones</h5>
+                  <div><hr style="margin: 0px; padding: 0px;"></div>
+                  <br>
+                  <div class="contenedor-caracteristicas">                      
+                    <div class="ql-container ql-snow" style="border:0px !important; width: 96%;">                     
+                      <div id="caracteristicas-articulo" class="ql-editor">
+                      </div>
+                    </div>
+                    </div>
+                </div>
+              </div>
+              <br>   
+              <div class="card" style="width: 100%" >             
+                <div class="card-body">
+                  <h5 class="card-title"> Descripción del producto</h5>
+                  <div><hr style="margin: 0px; padding: 0px;"></div>
+                  <br>
+                  <div class="ql-container ql-snow" style="border:0px !important; width: 96%;">                     
+                      <div id="descripcion-articulo" class="ql-editor">
+                      </div>
+                    </div>
+                </div>
+              </div>              
+          </mat-tab>
+          <mat-tab label="Calificación">
+            <mat-card style="display: flex; flex-direction: row; margin-top: 20px;  flex-wrap: wrap; ">
+              <div class="resumen-valoracion">
+                <div style="font-size: 20px;font-weight: 5px; width: 100%;">Calificación Promedio</div>
+                <div class="valoracionPromedio" style="width: 100%; display:flex; flex-direction: row; align-items: center; "> 
+                    <img class="estrella estrella1" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                    <img class="estrella estrella2" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                    <img class="estrella estrella3" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                    <img class="estrella estrella4" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                    <img class="estrella estrella5" alt="{{puntuacionPromedio}}" src="assets/images/star3.png">
+                    <div style="font-size: 25px; font-weight: 4px; margin-left: 10px; margin-top: 3px;">
+                        {{puntuacionPromedio}} de 5 
+                      </div>
+                </div>
+                <div>
+                      <div>
+                        <label class="numeroComentarios"> {{textoNumeroComentarios}} </label>    
+                    </div>
+                </div>   
+              </div>
+              <div class="todos-comentarios">
+                  <app-valoracion (messageEvent)="receiveMessage($event)"></app-valoracion>
+
+              </div>
+ 
+            </mat-card>
+          </mat-tab>
+          <mat-tab label="Sobre la Marca" >
+            
+            <div class="card" style="width: 100%">
+              <div class="card-body">
+                <h5 class="card-title" style="text-align: center"> {{marca.nombremarca}}</h5>
+                <div><hr style="margin: 0px; padding: 0px;"></div>
+                <br>
+                <p>
+                  {{marca.descripcion}}
+                </p>
+                <div class="cont-img-marca">
+                  <img class="imagen-marca" src="{{articuloService.url_imagenes}}/md/{{marca.imagen}}" alt="" hspace="5" vspace="5" style="float: none;">
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Garantía">
+            <div class="card" style="width: 100%" >
+              <div class="card-body">
+                <h5 class="card-title"> Informacion de Garantia</h5>
+                <div><hr style="margin: 0px; padding: 0px;"></div>
+                <br>
+                <div class="contenedor-caracteristicas">                      
+                  <div class="ql-container ql-snow" style="border:0px !important; width: 96%;">                     
+                    <div id="garantias-articulo" class="ql-editor">
+                    </div>
+                  </div>
+                  </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group> 
+      </div>
+  </div>
+</div>
+<div style="width: 100%; height: 50px;">
+  
+    
+</div>
+
+<div id="modalPlan" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content" style="border: 0px solid white;border-radius: 0px;">
+      <div class="modal-header" style=" border-radius: 0px;text-align: center;display: flex; flex-direction: row; align-items: center; justify-content: center;background-color: orange; color: white;">
+        <div>
+            <h4>Plan {{planSeleccionado.nombreplan}}</h4>    
+        </div>          
+      </div>
+      <div class="modal-body">
+          <div class="contenedor-caracteristicas">
+            <div style="display:flex; margin-bottom: 5px;" class="item-caracteristica" *ngFor="let det of listaDetallePlan">
+              <div style="width: 20px;"><li></li></div>
+              <div>{{det}}</div>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" style="background-color: #212529; color:  white;">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

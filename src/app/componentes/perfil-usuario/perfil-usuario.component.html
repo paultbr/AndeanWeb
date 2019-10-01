@@ -1,0 +1,326 @@
+<mat-sidenav-container class="perfil">
+  <mat-sidenav mode="side" opened class="menuLateral">
+    <mat-card>
+      <mat-card-title>Mi cuenta</mat-card-title>
+      <mat-card-content>
+        <mat-list>
+          <!--<mat-list-item>
+            <mat-icon mat-list-icon>local_mall</mat-icon>
+            <a href="{{url}}#ordenes-de-compra" mat-line>Ordenes de Compra</a>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <mat-icon mat-list-icon>local_play</mat-icon>
+            <a href="{{url}}#lista-de-deseos" mat-line>Lista de Deseos</a>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <mat-icon mat-list-icon>local_grocery_store</mat-icon>
+            <a href="{{url}}#compras" mat-line>Compras</a>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <mat-icon mat-list-icon>local_atm</mat-icon>
+            <a href="{{url}}#metodos-de-pago" mat-line>Métodos de Pago</a>
+          </mat-list-item>
+          <mat-divider></mat-divider>-->
+          <mat-list-item>
+            <mat-icon mat-list-icon>how_to_reg</mat-icon>
+            <a href="{{url}}#datosPersonales" mat-line>Datos Personales</a>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item>
+            <mat-icon mat-list-icon>local_mall</mat-icon>
+            <a href="{{url}}#seguimiento-de-compra" mat-line>Seguimiento de compras</a>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </mat-sidenav>
+  <mat-sidenav-content id="perfil-usuario">
+    <!--
+    <mat-card id="ordenes-de-compra" class="card-perfil">
+      <mat-card-title>Ordenes de Compra</mat-card-title>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <h4 mat-line>Articulo</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Pedido</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Precio</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Estado</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+    <mat-card id="lista-de-deseos" class="card-perfil">
+      <mat-card-title>Lista de Deseos</mat-card-title>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <h4 mat-line>Articulo</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Pedido</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Precio</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Estado</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+    <mat-card id="compras" class="card-perfil">
+      <mat-card-title>Compras</mat-card-title>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <h4 mat-line>Articulo</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Pedido</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Precio</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Estado</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+    <mat-card id="metodos-de-pago" class="card-perfil">
+      <mat-card-title>Métodos de Pago</mat-card-title>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <h4 mat-line>Articulo</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Pedido</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Precio</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Estado</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>-->
+    <mat-card id="datosPersonales" class="card-datos-personales">
+      <mat-card-title>Mis Datos Personales</mat-card-title>
+      <form #clienteForm="ngForm" class="datos-form" *ngIf="usuarioService.usuarioSeleccionado">
+        <mat-card-content>
+          <input type="hidden" name="_id" #_id="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado._id">
+          <mat-form-field id="tipoDocumento" class="campo-form">
+            <mat-select name="tipoDocumento" #tipoDocumento="ngModel"
+              [(ngModel)]="usuarioService.usuarioSeleccionado.tipoDocumento" placeholder="Tipo Documento">
+              <mat-option *ngFor="let tipodoc of tiposDocumento" [value]="tipodoc">{{tipodoc}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field id="numeroDocumento" class="campo-form">
+            <input matInput name="numeroDocumento" #numeroDocumento="ngModel"
+              [(ngModel)]="usuarioService.usuarioSeleccionado.numeroDocumento" placeholder="Número de Documento"
+              minlength="8" required>
+            <mat-error
+              *ngIf="numeroDocumento.invalid && (numeroDocumento.dirty || numeroDocumento.touched) && numeroDocumento.errors.required">
+              El
+              número de Documento es obligatorio</mat-error>
+            <mat-error
+              *ngIf="numeroDocumento.invalid && (numeroDocumento.dirty || numeroDocumento.touched) && numeroDocumento.errors.minlength">
+              El
+              documento debe tener mínimo 8 dígitos</mat-error>
+          </mat-form-field>
+          <mat-form-field id="nombres" class="campo-form">
+            <input matInput placeholder="Nombres" name="nombres" #nombres="ngModel"
+              [(ngModel)]="usuarioService.usuarioSeleccionado.nombres" required>
+            <mat-error *ngIf="nombres.invalid && (nombres.dirty || nombres.touched) && nombres.errors.required">El
+              campo nombres es requerido</mat-error>
+          </mat-form-field>
+          <mat-form-field id="apellidos" class="campo-form">
+            <input matInput name="apellidos" #apellidos="ngModel"
+              [(ngModel)]="usuarioService.usuarioSeleccionado.apellidos" placeholder="Apellidos" required>
+            <mat-error *ngIf="apellidos.invalid && (apellidos.dirty || apellidos.touched) && apellidos.errors.required">
+              El
+              campo apellidos es requerido</mat-error>
+          </mat-form-field>
+          <mat-form-field id="correo" class="campo-form">
+            <input matInput name="correo" #correo="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.correo"
+              placeholder="Correo Electrónico" disabled>
+          </mat-form-field>
+          <mat-radio-group id="sexo" name="sexo" #sexo="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.sexo">
+            <mat-label>Sexo: &nbsp;</mat-label>
+            <mat-radio-button value="F">&nbsp;Femenino&nbsp;</mat-radio-button>
+            <mat-radio-button value="M">&nbsp;Masculino&nbsp;</mat-radio-button>
+          </mat-radio-group>
+          <mat-form-field id="fechaNacimiento" class="campo-form">
+            <input matInput [matDatepicker]="picker" placeholder="Fecha de Nacimiento" name="fechaNacimiento"
+              #fechaNacimiento="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.fechaNacimiento">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field id="fechaAfiliacion" class="campo-form">
+            <input matInput [matDatepicker]="fechaAfiliacion" placeholder="Fecha de Afiliación" name="fecha_afiliacion"
+              #fecha_afiliacion="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.fecha_afiliacion" disabled>
+            <mat-datepicker-toggle matSuffix [for]="fechaAfiliacion"></mat-datepicker-toggle>
+            <mat-datepicker #fechaAfiliacion></mat-datepicker>
+          </mat-form-field>
+          <mat-checkbox id="promociones" name="promociones" #promociones="ngModel"
+            [(ngModel)]="usuarioService.usuarioSeleccionado.promociones">Recibir promociones en mi correo.
+          </mat-checkbox>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="actualizar()">ACTUALIZAR MIS DATOS</button>
+        </mat-card-actions>
+      </form>
+    </mat-card>
+    <mat-card class="card-direcciones">
+      <mat-card-title>Mis Direcciones de Envío</mat-card-title>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item class="itemDireccion" *ngFor="let direccion of direccionService.direccion"
+            (click)="mostrarDireccion(direccion)">
+            <mat-icon mat-list-icon>home</mat-icon>
+            <h4 mat-line>{{direccion.direccion}}</h4>
+          </mat-list-item>
+          <mat-list-item class="itemDireccion" (click)="mostrarFormulario()">
+            <mat-icon mat-list-icon>add_circle</mat-icon>
+            <h4 mat-line>Agregar nueva dirección</h4>
+          </mat-list-item>
+        </mat-list>
+        <form #nuevaDireccion="ngForm" [hidden]="!mostrarFormularioDireccion">
+          <input type="hidden" name="_id" #_id="ngModel" [(ngModel)]="direccionService.selecDireccion._id">
+          <mat-form-field id="departamento" class="campo-form">
+            <mat-select name="departamento" #departamento="ngModel"
+              [(ngModel)]="direccionService.selecDireccion.departamento"
+              (selectionChange)="regionService.setDepartamentoSelected($event.value)" placeholder="Departamento">
+              <mat-option *ngFor="let dep of regionService.regiones" [value]="dep.departamento">{{dep.departamento}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field id="provincia" class="campo-form">
+            <mat-select name="provincia" #provincia="ngModel" [(ngModel)]="direccionService.selecDireccion.provincia"
+              (selectionChange)="regionService.setProvinciaSelected($event.value)" placeholder="Provincia">
+              <mat-option *ngFor="let prov of regionService.departamentoSelected.provincias" [value]="prov.provincia">
+                {{prov.provincia}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field id="distrito" class="campo-form">
+            <mat-select name="distrito" #distrito="ngModel" [(ngModel)]="direccionService.selecDireccion.distrito"
+              placeholder="Distrito">
+              <mat-option *ngFor="let dis of regionService.provinciaSelected.distritos" [value]="dis">{{dis}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field id="direccion">
+            <input matInput name="direccion" #direccion="ngModel"
+              [(ngModel)]="direccionService.selecDireccion.direccion" placeholder="Dirección" required>
+            <mat-error *ngIf="direccion.invalid && (direccion.dirty || direccion.touched) && direccion.errors.required">
+              La
+              dirección es un campo requerido</mat-error>
+          </mat-form-field>
+          <mat-form-field id="tipolocal" class="campo-form">
+            <mat-select name="tipolocal" #tipoLocal="ngModel" [(ngModel)]="direccionService.selecDireccion.tipolocal"
+              placeholder="Local de Envío">
+              <mat-option *ngFor="let vivienda of tiposVivienda" [value]="vivienda">{{vivienda}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field id="referencia">
+            <input matInput name="referencia" #referencia="ngModel"
+              [(ngModel)]="direccionService.selecDireccion.referencia" placeholder="Referencia" required>
+          </mat-form-field>
+          <mat-error
+            *ngIf="referencia.invalid && (referencia.dirty || referencia.touched) && referencia.errors.required">La
+            referencia es un campo obligatorio</mat-error>
+          <mat-form-field id="telefono">
+            <input matInput name="telefono" #telefono="ngModel" [(ngModel)]="direccionService.selecDireccion.telefono"
+              placeholder="Teléfono/Celular" required minlength="6">
+            <mat-error *ngIf="telefono.invalid && (telefono.dirty || telefono.touched) && telefono.errors.required">El
+              teléfono es un campo obligatorio</mat-error>
+            <mat-error *ngIf="telefono.invalid && (telefono.dirty || telefono.touched) && telefono.errors.minlength">El
+              telefono debe tener una longitud mínima de 6 digitos</mat-error>
+          </mat-form-field>
+          <button id="botonActualizar" mat-raised-button color="primary"
+            (click)="nuevadireccion(nuevaDireccion)">{{botonActualizar}}</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    <mat-card id="seguimiento-de-compra" class="card-perfil">
+      <mat-card-title>Seguimiento de Compra</mat-card-title>
+      <mat-card-content>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fecha Compra</th>
+              <th>Nro Pedido</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let pedidos of arreglopedidos">
+            <tr>
+              <td>{{pedidos.FechaCompra}}</td>
+              <td>{{pedidos.NroPedido}}</td>
+              <td><button mat-raised-button color="primary"
+                  (click)="detallepedido(pedidos.FechaCompra,pedidos.FechaEnvio,pedidos.EstadoEnvio,pedidos.PrecioTotal,pedidos.Articulo)">VER</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+    <mat-card hidden id="detalle" class="card-perfil">
+      <button mat-raised-button color="primary" (click)="regresarped()">Regresar</button>
+      <mat-card-title>Seguimiento de Pedido</mat-card-title>
+      <mat-card-content>
+        <p><label>Fecha de Compra: </label>{{fechacompraP}}</p>
+        <div class="container">
+          <div class="row">
+            <label style="font-size: 13px;">ESTADO DE PEDIDO: </label>
+            <!--  <div class="col-md-1"><i class="material-icons" style="font-size: 20px;">business</i></div> -->
+            <div class="col-md-6">
+              <!--  <h3 class="progress-title">Estado de pedido</h3>-->
+              <div *ngIf="estadoenvioP=='Proceso'">
+                <h3 class="progress-title"><i class="material-icons">business</i><span class="progress-subtitle"><i
+                      class="material-icons">home</i></span></h3>
+                <div class="progress">
+                  <div class="progress-bar" style="width:0%; background:#ff0000; color:#ff0000;">
+                    <!-- <div class="progress-value">{{estadoenvioP}}: {{fechaenvioP}}</div> -->
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="estadoenvioP=='Enviado'">
+                <h3 class="progress-title"><i class="material-icons">business</i><span class="progress-subtitle"><i
+                      class="material-icons">home</i></span></h3>
+                <div class="progress">
+                  <div class="progress-bar" style="width:50%; background:#fbff00; color:#fbff00;">
+                    <div class="progress-value">{{estadoenvioP}}: {{fechaenvioP}}</div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="estadoenvioP=='Entregado'">
+                <h3 class="progress-title"><i class="material-icons">business</i><span
+                    class="progress-subtitle">{{estadoenvioP}}: {{fechaenvioP}}<i class="material-icons">home</i></span>
+                </h3>
+                <div class="progress">
+                  <div class="progress-bar" style="width:100%; background:#00d30b; color:#00d30b;">
+                    <!-- <div class="progress-value" style="right: 120px;">{{estadoenvioP}}: {{fechaenvioP}}</div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-md-1"><i class="material-icons" style="font-size: 50px; size: 50px">home</i></div> -->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-sidenav-content>
+</mat-sidenav-container>

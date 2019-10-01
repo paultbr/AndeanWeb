@@ -1,0 +1,253 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.card-perfil,
+.card-datos-personales,
+.card-direcciones {
+  margin: 5px 5px;
+}
+
+.card-perfil {
+  width: 100%;
+}
+
+.datos-form {
+  width: 100%;
+}
+
+.itemDireccion :hover {
+  cursor: pointer;
+}
+
+.menuLateral {
+  display: none;
+}
+
+#tipoDocumento {
+  width: 30%;
+}
+
+#numeroDocumento {
+  width: 70%;
+}
+
+#nombres,
+#apellidos,
+#correo,
+#fechaNacimiento,
+#fechaAfiliacion,
+#sexo,
+#promociones,
+#departamento,
+#provincia,
+#distrito,
+#direccion,
+#tipolocal,
+#referencia,
+#telefono {
+  width: 100%;
+}
+
+/* Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {}
+
+/* Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {
+
+  mat-card-title {
+    text-align: center;
+  }
+
+  .menuLateral {
+    display: inline;
+  }
+
+  #botonActualizar {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  #nombres,
+  #apellidos,
+  #tipoDocumento,
+  #numeroDocumento,
+  #correo,
+  #sexo,
+  #fechaNacimiento,
+  #fechaAfiliacion,
+  #telefono {
+    width: 50%;
+    padding: .25rem;
+  }
+
+  #sexo {
+    font-size: 12px;
+  }
+
+  #departamento,
+  #provincia,
+  #distrito {
+    width: 33%;
+  }
+
+  #tipolocal {
+    width: 30%;
+  }
+
+  #referencia {
+    width: 70%;
+  }
+  #departamento, #provincia, #distrito, #tipolocal, #referencia, #direccion {
+    padding: 0px .25rem;
+  }
+}
+
+/* Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+
+  #perfil-usuario {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .card-datos-personales,
+  .card-direcciones {
+    width: 48%;
+  }
+}
+/*progress*/
+/*.progress-title{
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  margin: 0 0 30px;
+}
+.progress_bar .progress_number{
+  float: right;
+  margin-top: -24px;
+}
+.progress{
+  height: 7px;
+  background: #fff;
+  border-radius: 0;
+  margin-bottom: 30px;
+  overflow: visible;
+  box-shadow: none;
+}
+.progress .progress-bar{
+  background: #fff;
+  box-shadow: none;
+  border-radius: 0;
+  position: relative;
+  -webkit-animation: animate-positive 2s;
+  animation: animate-positive 2s;
+}
+.progress .progress-bar:before{
+  content: "";
+  border-bottom: 20px solid #000000;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+}
+.progress-bar .progress-value{
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  position: absolute;
+  top: -33px;
+  right: 0;
+}
+.progress.yellow .progress-bar,
+.progress.yellow .progress-bar:before{ border-bottom-color: #fec100; }
+.progress.purple .progress-bar,
+.progress.purple .progress-bar:before{ border-bottom-color: #663399; }
+.progress.green .progress-bar,
+.progress.green .progress-bar:before{ border-bottom-color: #0ead69; }
+@-webkit-keyframes animate-positive{
+  0%{ width: 0; }
+}
+@keyframes animate-positive{
+  0%{ width: 0; }
+}*/
+.progress-title{
+  font-size: 16px;
+  font-weight: 700;
+  color: #5a5a5a;
+  margin: 0 0 10px;
+}
+.progress-subtitle{
+  /* display: block;
+    font-size: 12px;
+    color: #414141;
+    position: absolute;
+    top: -23px;
+    right: 0; */
+   /*  float: right;
+    margin-top: -24px; */
+    float: right;
+    display:block;
+}
+.progress{
+  height: 10px;
+  line-height: 15px;
+  background: #f0f0f0;
+  border-radius: 0;
+  margin-bottom: 50px;
+  padding: 4px;
+  box-shadow: none;
+  overflow: visible;
+}
+.progress:last-child{
+  margin-bottom: 0;
+}
+.progress .progress-bar{
+  position: relative;
+  animation: animate-positive 2s;
+}
+.progress .progress-bar:after{
+  content: "\f0da";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 22px;
+  position: absolute;
+  top: -9px;
+  right: -2px;
+}
+.progress .progress-value{
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 4px;
+  padding: 3px 7px;
+  background: #29102b;
+  position: absolute;
+  top: -50px;
+  right: -120px;
+
+}
+.progress .progress-value:after{
+  content: "";
+  border: 5px solid transparent;
+  border-top: 5px solid #29102b;
+  border-left: 5px solid #29102b;
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+}
+@-webkit-keyframes animate-positive{
+  0% { width: 0%; }
+}
+@keyframes animate-positive{
+  0% { width: 0%; }
+}
+
+/**/

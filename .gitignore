@@ -1,0 +1,61 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+/server/config/database.js
+/server/config/mysql.js
+/server/dist
+# compiled output
+/dist
+/tmp
+/out-tsc
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+package-lock.json
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+/imagenes
+package.json
+server/index.js
+/excel
+src/app/material.ts
+src/app/material.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+src/app/componentes/constantes.ts
+server/config.rar

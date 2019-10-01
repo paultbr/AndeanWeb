@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-12 col-md-8 col-lg-6 mx-auto">
+      <div class="card card-signin my-5">
+        <form #loginForm="ngForm" class="form-signin" method="post" (ngSubmit)="login(loginForm)">
+          <div class="card-body">
+            <h5 class="card-title text-center"><i class="fas fa-key"></i> Iniciar Sesión</h5>
+            <hr>
+            <mat-form-field id="correo">
+              <input type="email" matInput placeholder="Correo electrónico" name="correo" #correo="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.correo"
+                required email>
+              <mat-error *ngIf="correo.invalid && (correo.dirty || correo.touched) && correo.errors.required">
+                El correo electrónico es obligatorio.
+              </mat-error>
+              <mat-error *ngIf="correo.invalid && (correo.dirty || correo.touched) && correo.errors.email">
+                El correo debe ser válido.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field id="contraseña">
+              <input type="password" matInput placeholder="Contraseña" name="password" #password="ngModel" [(ngModel)]="usuarioService.usuarioSeleccionado.password"
+                required minlength="6">
+              <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.required">
+                La contraseña es obligatoria.
+              </mat-error>
+              <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.minlength">
+                La contraseña debe tener una longitud mínima de 6 caracteres.
+              </mat-error>
+            </mat-form-field>
+            <div class="form-label-group">
+              <a routerLink="/restablecer">¿Olvidaste tu contraseña?</a>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="btn btn-lg btn-secondary btn-block text-uppercase" type="submit" id="btniniciosesion">
+              Iniciar Sesión</button>
+          </div>
+          <hr>
+          <div class="card-body" id="footer-login">
+            <div class="row">
+              <div class="col col-lg-6 col-md-12 col-sm-12">
+                <!--<label> Inicia Sesión con :</label>
+                <button type="button" class="btn btn-default btn-circle" id="boton-facebook" aria-placeholder="Facebook"><i
+                    class="fab fa-facebook-f"></i>
+                </button>
+                <button type="button" class="btn btn-primary btn-circle" id="boton-google" placeholder="Google"><i
+                    class="fab fa-google"></i>
+                </button>
+                <button type="button" class="btn btn-success btn-circle" id="boton-twitter" placeholder="Twitter"><i
+                    class="fab fa-twitter"></i>
+                </button>-->
+              </div>
+              <div class="col col-lg-6 col-md-12 col-sm-12">
+                <label>¿Eres nuevo? <a routerLink="/registro">Regístrate</a></label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
