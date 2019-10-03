@@ -1,11 +1,54 @@
-<div style="display: flex; flex-direction: column; flex-wrap: wrap; margin-top:10px ; align-items: center;">
+
   <div #carouselbanners  class="carusel-grande">
     <div id="carousel-grande-owl" class="owl-carousel owl-theme">
-      <div class='item' *ngFor="let banner of banners" routerLink="/busqueda/ban/{{banner._id}}" ><a href="/busqueda/ban/{{banner._id}}" aria-label="Banner de búsqueda"> <img src="{{URL_IMAGENES}}/{{banner.imagen}}" alt="smarket banner {{banner.imagen}}"></a></div>
+      <div class='item' *ngFor="let banner of banners"  ><a href="/busqueda/ban/{{banner._id}}/1" aria-label="Banner de búsqueda"> <img src="{{URL_IMAGENES}}/{{banner.imagen}}" alt="smarket banner {{banner.imagen}}"></a></div>
     </div> 
   </div> 
+  <div  class="categorias">
+    <h5 class="titulo">Categorias</h5>
+    <div class="contenido-categorias">
+      <div class="item-categorias-home"  *ngFor="let cat of categorias">
+        <img class="imagen-categoria" src="{{URL_IMAGENES}}/{{cat.imagen}}" alt="{{cat.nombre}}">
+        <h6 class="nombre-catagoria">{{cat.nombre}}</h6>
+
+      </div>
+      <div class="item-categorias-home" style="width: 100%" >
+        <button mat-stroked-button  style="border-radius: 25px;">Ver mas</button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div #carouselofertas class="ofertas">
+    <h5 class="titulo">Ofertas relampago</h5>
+    <div id="owl-demo-ofertas" class="owl-carousel owl-theme" >   
+         
+        <mat-card class="item-producto" *ngFor="let cardsimple of listaofertas;">
+            <div class="cont-imagen-producto">
+              <div *ngIf="cardsimple.descuento != 0" class="porcentaje">-{{cardsimple.descuento}}%</div>  
+              <img class="imagen-producto" src="{{URL_IMAGENES}}/{{cardsimple.imagenes[0]}}" alt="{{cardsimple.titulo}}">
+            </div>
+            <div class="nombre-producto">
+              {{cardsimple.titulo}}
+            </div>
+            <div *ngIf="cardsimple.descuento != 0" style="font-size: 12px;color: rgba(0,0,0,0.5);"><del>S/ {{cardsimple.precioventa | number: '1.2-2'}}</del></div>
+            <div *ngIf="cardsimple.descuento != 0" style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{(cardsimple.precioventa - cardsimple.descuento * cardsimple.precioventa / 100) | number:'1.2-2'}}</div>
+            <div *ngIf="cardsimple.descuento == 0" style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{(cardsimple.precioventa) | number:'1.2-2'}}</div>
+        </mat-card>
+    </div> 
+  </div>
+  <div #carouselmarcas class="marcas">
+    <h5 class="titulo">Marcas</h5>
+    <div id="owl-demo-marcas"  class="owl-carousel owl-theme">
+      <div class="item-marca" *ngFor="let marca of marcas;">
+          <img class="imagen-marca" src="{{URL_IMAGENES}}/{{marca.imagen}}" alt="smarket {{marca.imagen}}">
+      </div>
+
+    </div>
+  </div>
  
-  <div #carouselmarcas  class="cont-carouseles">    
+  <!--<div #carouselmarcas  class="cont-carouseles">    
     <div style="display: flex; flex-direction: row; justify-content: left; align-items: left; width: 100%; ">
         <h5 class="label-home">Marcas</h5>        
 
@@ -14,37 +57,52 @@
       <div style="width: 98%; display:flex; justify-content: center; margin-top: 15px;">
       
         <div id="owl-demo-marcas" class="owl-carousel owl-theme" >  
-          <div class="item-marca noseleccionable"  *ngFor="let marca of marcas;"routerLink="/busqueda/marca/{{marca._id}}" >
-              
-              <img src="{{URL_IMAGENES}}/{{marca.imagen}}" alt="smarket {{marca.imagen}}" style="width: auto; height: auto; max-height: 50px; max-width: 100%;">
+          <div class="item-marca noseleccionable"  *ngFor="let marca of marcas;">
+              <a href="/busqueda/marca/{{marca._id}}/1" >              <img src="{{URL_IMAGENES}}/{{marca.imagen}}" alt="smarket {{marca.imagen}}" style="width: auto; height: auto; max-height: 50px; max-width: 100%;">
+              </a>
               
           </div>  
         </div>          
       </div>   
   
-    </div>
-  <div #carouselofertas  class="cont-carouseles">
+    </div>-->
+  <!--<div #carouselofertas  class="cont-carouseles">
       
 
-      <div style="width: 100%;display:flex; justify-content:flex-start; ">
-          <h5 class="label-home">Ofertas Relampago</h5>        
+      <div style="width: 100%;display:flex; justify-content:flex-start; align-items: center">
+          <h5 class="label-home">Ofertas Relampago</h5>  <mat-spinner [diameter]="25"[hidden]="!mostrarCargandoOfertas" style="margin-left: 10px;"></mat-spinner>     
       </div>   
      
       <div style="width: 98%; display:flex; justify-content: center; margin-top: 15px;">
         <br>
         <div id="owl-demo-ofertas" class="owl-carousel owl-theme" >   
           <div class="item noseleccionable"  *ngFor="let cardsimple of listaofertas;" style="width: 100%;display:flex; justify-content: center;" routerLink="/articulo/{{cardsimple.url}}">
-              <div class="simple-card noseleccionable" routerLink="/articulo/{{cardsimple.url}}">
-                  <div class="descuento porcentaje">-{{cardsimple.descuento}}%</div>   
-                <div class="img-card">
-                  <img  class="imagen-card-articulo" src="{{URL_IMAGENES}}/{{cardsimple.urlImagen}}" alt="smarket {{cardsimple.urlImagen}}">
-                </div> 
+              <div *ngIf="cardsimple.cantidadtotal == 0" class="simple-card noseleccionable" routerLink="/articulo/{{cardsimple.url}}" >
+                  <div *ngIf="cardsimple.descuento != 0" class="descuento porcentaje">-{{cardsimple.descuento}}%</div>   
+                <div class="img-card" style="filter: blur(6px);">
+                  <img  class="imagen-card-articulo" src="{{URL_IMAGENES}}/{{cardsimple.imagenes[0]}}" alt="smarket {{cardsimple.imagenes[0]}}">                </div> 
                 <div class="nombre-articulo-card">
                   {{cardsimple.titulo}}
                 </div>
-                <div style="font-size: 12px;color: rgba(0,0,0,0.5);"><del>S/ {{cardsimple.precio | number: '1.2-2'}}</del></div>
-                <div style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{cardsimple.precio - cardsimple.descuento * cardsimple.precio / 100 | number:'1.2-2'}}</div>
+                <div *ngIf="cardsimple.descuento != 0" style="font-size: 12px;color: rgba(0,0,0,0.5);"><del>S/ {{cardsimple.precioventa | number: '1.2-2'}}</del></div>
+                <div *ngIf="cardsimple.descuento != 0" style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{(cardsimple.precioventa - cardsimple.descuento * cardsimple.precioventa / 100) | number:'1.2-2'}}</div>
+                <div *ngIf="cardsimple.descuento == 0" style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{(cardsimple.precioventa) | number:'1.2-2'}}</div>
+                <div  style="position: absolute;top: 35%;left: 50%;transform: translate(-50%, -50%); font-size: 23px;color: rgb(222, 184, 240); display:flex; flex-direction: row;justify-content: center; align-items: center; width: 100%;">AGOTADO</div>
+
               </div>
+              <div *ngIf="cardsimple.cantidadtotal != 0" class="simple-card noseleccionable" routerLink="/articulo/{{cardsimple.url}}" >
+                <div *ngIf="cardsimple.descuento != 0" class="descuento porcentaje">-{{cardsimple.descuento}}%</div>   
+                <div class="img-card" >
+                  <img  class="imagen-card-articulo" src="{{URL_IMAGENES}}/{{cardsimple.imagenes[0]}}" alt="smarket {{cardsimple.imagenes[0]}}">                </div> 
+                <div class="nombre-articulo-card">
+                  {{cardsimple.titulo}}
+                </div>
+                <div *ngIf="cardsimple.descuento != 0" style="font-size: 12px;color: rgba(0,0,0,0.5);"><del>S/ {{cardsimple.precioventa | number: '1.2-2'}}</del></div>
+                <div *ngIf="cardsimple.descuento != 0" style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{(cardsimple.precioventa - cardsimple.descuento * cardsimple.precioventa / 100) | number:'1.2-2'}}</div>
+                <div *ngIf="cardsimple.descuento == 0" style="font-size: 16px;color: #df3b3b;font-weight: 500;">S/ {{(cardsimple.precioventa) | number:'1.2-2'}}</div>
+
+            </div>
+
           </div>   
         </div>          
       </div>
@@ -72,10 +130,9 @@
               </div> 
           </div>          
         </div>
-    </div>
+    </div>-->
     
-  
-</div>
+
 
   <!--
 <div class="articulo-principal" style="padding: 5px; height: 100%; ">

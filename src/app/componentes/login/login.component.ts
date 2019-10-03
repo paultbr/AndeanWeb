@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
               public titleService: Title,
               public metaService: Meta) { }
 
+              hide = true;
   ngOnInit() {
     this.titleService.setTitle('Inicio de Sesión | Smarket');
     this.metaService.updateTag({name: 'description', content: 'Inicia sesión en la tienda virtual SMARKET y accede a todos los beneficios que tiene para comprar.'})
@@ -39,7 +40,7 @@ export class LoginComponent implements OnInit {
   login(form?: NgForm){
     this.usuarioService.login(form.value).subscribe(res => {
       const respuesta = res as any;
-      console.log(respuesta);
+      //console.log(respuesta);
       if(respuesta.status && respuesta.session_token){
         localStorage.setItem('session_token',respuesta.session_token);
         localStorage.setItem('session_token_exp',respuesta.session_token_exp);
@@ -51,7 +52,7 @@ export class LoginComponent implements OnInit {
         location.reload()
       } else {
         this.openSnackBar(respuesta.status, respuesta.error);
-        console.log(respuesta.error);
+        //console.log(respuesta.error);
         this.resetForm(form);
       }
     });

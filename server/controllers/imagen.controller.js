@@ -38,12 +38,76 @@ const compressorPluginsSM = [
 ];
 
 
+imagenController.crearCarpeta = async (req, res)=>{
+    console.log(req.body);
+    var rutalg = './imagenes/lg'+req.body.ruta+'/'+req.body.carpeta;
+    var rutamd = './imagenes/md'+req.body.ruta+'/'+req.body.carpeta;
+    var rutasm = './imagenes/sm'+req.body.ruta+'/'+req.body.carpeta;
+   // console.log(ruta);
+    try {
+        await fs.mkdir(rutalg, { recursive: true });
+        await fs.mkdir(rutamd, { recursive: true });
+        await fs.mkdir(rutasm, { recursive: true });
+        res.json({
+            estado:1,
+            mensaje:'Exito.'
+        });
 
+      } catch (err) {
+        if (err.code !== 'EEXIST') {
+            res.json({
+                estado:0,
+                mensaje:'ERROR. El directorio ya existe.'
+            });
+        }
+      }
+}
+imagenController.eliminarCarpeta = async(req,res)=>{
+    try{
+        console.log(req.body.ruta);
+        await fs.rmdirSync('./imagenes/lg'+req.body.ruta);
+        await fs.rmdirSync('./imagenes/md'+req.body.ruta);
+        await fs.rmdirSync('./imagenes/sm'+req.body.ruta);
+        res.json({
+            estado:1,
+            mensaje:'Exito.'
+        });
+
+    }catch(e){
+        console.log(e);
+            res.json({
+                estado:0,
+                mensaje:'ERROR. NO se pudo eliminar la carpeta. Debe estar vacia para eliminar'
+            });
+    
+    }
+}
+imagenController.eliminarArchivo = async(req,res) =>{
+    try{
+        console.log(req.body.ruta);
+        await fs.unlinkSync('./imagenes/lg'+req.body.ruta);
+        await fs.unlinkSync('./imagenes/md'+req.body.ruta);
+        await fs.unlinkSync('./imagenes/sm'+req.body.ruta);
+        res.json({
+            estado:1,
+            mensaje:'Exito.'
+        });
+
+    }catch(e){
+        console.log(e);
+            res.json({
+                estado:0,
+                mensaje:'ERROR. NO se pudo eliminar el archivo.'
+            });
+    
+    }
+}
 
 imagenController.subirImagen = function (req,res){
     
     var nombre = (req.file.originalname).split(" ").join("-");   
-    webp.cwebp(input+"/"+nombre,output_lg+"/"+nombre+".webp","-q 80",function(status,error)
+    var ruta = req.body.ruta;
+    webp.cwebp(input+"/"+nombre,output_lg+""+ruta+"/"+nombre+".webp","-q 80",function(status,error)
     {
         if(error){
             console.log("Ocurrio un error al convertir a WEBP");
@@ -63,7 +127,7 @@ imagenController.subirImagen = function (req,res){
                     image.resize(jimp.AUTO, 250)
                     .quality(100)
                     .write(input2+"/"+nombre,()=>{
-                        webp.cwebp(input2+"/"+nombre,output_md+"/"+nombre+".webp","-q 80",function(status,error)
+                        webp.cwebp(input2+"/"+nombre,output_md+""+ruta+"/"+nombre+".webp","-q 80",function(status,error)
                         {
                             if(error){
                                 console.log("ERROR al procesar las imagenes");
@@ -76,7 +140,7 @@ imagenController.subirImagen = function (req,res){
                                 image.resize(jimp.AUTO, 65)
                                 .quality(100)
                                 .write(input2+"/"+nombre, ()=>{
-                                    webp.cwebp(input2+"/"+nombre,output_sm+"/"+nombre+".webp","-q 80",function(status,error)
+                                    webp.cwebp(input2+"/"+nombre,output_sm+""+ruta+"/"+nombre+".webp","-q 80",function(status,error)
                                     {
                                         if(error){
                                             console.log("ERROR al procesar las imagenes");
@@ -86,6 +150,7 @@ imagenController.subirImagen = function (req,res){
                                                 mensaje:error
                                             });
                                         }else{
+                                            console.log("EXITO AL PROCESAR LA IMAGEN");
                                             res.json({
                                                 estado: 1,
                                                 mensaje:"Exito",
@@ -109,6 +174,7 @@ imagenController.getImagenes = async (req,res)=>{
     var listaimagenes = new Array();
     fs.readdir('./imagenes/lg', (err, files) => {
         files.forEach(file => {
+           // console.log(f)
             listaimagenes.push(file);
         });
         res.json(listaimagenes);
@@ -117,10 +183,11 @@ imagenController.getImagenes = async (req,res)=>{
 }
 imagenController.getFiles = async (req,res)=>{
     try{
+        console.log(req.body.nombre);
         var listaimagenes = new Array();
-        fs.readdir('./imagenes/tmp', (err, files) => {
+        fs.readdir('./imagenes/md'+req.body.nombre, (err, files) => {
             files.forEach(file => {
-                listaimagenes.push(file);
+                listaimagenes.push(file);   
             });
             res.json(listaimagenes);
         });
@@ -128,6 +195,9 @@ imagenController.getFiles = async (req,res)=>{
         console.log(err);
     }
       
+}
+imagenController.getListaArchivos = function(req,res){
+
 }
 
 module.exports = imagenController;

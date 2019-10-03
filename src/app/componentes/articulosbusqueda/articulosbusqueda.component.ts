@@ -28,6 +28,16 @@ import { comunicacionService } from '../comunicacion.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class ArticulosbusquedaComponent implements OnInit {
+  // RESULTADOS BUSQUEDA
+  totalResultados = 0;
+  numeroPaginas = 0;
+  arrayPaginacion = new Array();
+  paginaSeleccionada : number = 1;
+  izquierda = new Array();
+  derecha = new Array();
+  opcionBusqueda : any = "palclv";
+
+
   //range slider
   minValue: number = 0;
   maxValue: number = 5000;
@@ -58,6 +68,8 @@ export class ArticulosbusquedaComponent implements OnInit {
   arreglomarcas: string[]; //= new Array();
   arreglocategorias: string[];
   arreglocategoriasP: string[];
+
+  mostrarBuscando = false;
 
   selected = 'option1';
   listacategorias = new Array();
@@ -155,11 +167,16 @@ export class ArticulosbusquedaComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, public snackBar: MatSnackBar, private route: ActivatedRoute, private articulodetalleService: ArticuloDetalleService, private marcaservice: MarcaService, private categoriaservice: CategoriaService, private servicioapoyo: ServicioapoyoService, public comService: comunicacionService) {
     this.subscription = this.servicioapoyo.getPalabraClave()
       .subscribe(clave => {
+        this.mostrarBuscando = true;
         this.palabraClave = clave.clave;
-        this.listaraarticulos(this.palabraClave)
+        this.opcionBusqueda = "palclav";
+        this.listaraarticulos(this.palabraClave,1);
+        
       });
       this.subscriptioncat = this.comService.getCategoria().subscribe(id=>{
-        this.listararticate(id);
+        this.mostrarBuscando = true;
+        this.listararticate(id,1);
+        this.opcionBusqueda = "cat";
       });
 
   }
@@ -180,19 +197,25 @@ export class ArticulosbusquedaComponent implements OnInit {
     this.cuota = '0';
     this.tipordenado = 'orden1';
     var urlcat = this.route.snapshot.paramMap.get("tipobus");
+    this.opcionBusqueda = urlcat;
     var url = this.route.snapshot.paramMap.get("pclave");
+    this.palabraClave = url;
+    var pagina = this.route.snapshot.paramMap.get("page");
+    this.paginaSeleccionada = parseInt(pagina);
+    this.mostrarBuscando = true;
     if (urlcat == 'cat') {
-      this.listararticate(url);
+      //console.log("pagin:"+pagina)
+      this.listararticate(url, pagina);
     }
     else {
       if (urlcat == 'palclav') {
-        this.listaraarticulos(url);
+        this.listaraarticulos(url,pagina);
       } else {
         //busqueda por banner
         if(urlcat == 'marca'){
-          this.listaraarticulos2(url);
+          this.listaraarticulos2(url, pagina);
         }else{
-          this.buscarporBanner(url);
+          this.buscarporBanner(url, pagina);
         }
         
       }
@@ -201,6 +224,38 @@ export class ArticulosbusquedaComponent implements OnInit {
     this.palabraClave = url;
     //this. vistanoencontrado();
   }
+  // Calcular Paginacion
+  calcularPaginacion(){    
+    if(this.paginaSeleccionada<=this.numeroPaginas){
+      var izquierda = new Array();var derecha = new Array();
+      var faltaizquierda = 0; var faltaderecha = 0;
+      for(var i = -2 ;i<=2;i++){
+        if(i<0){
+          if(this.paginaSeleccionada + i <0){faltaizquierda = faltaizquierda+1;}
+          else{if(this.paginaSeleccionada + i  != 0){izquierda.push(this.paginaSeleccionada + i);}}
+        }else{
+          if(i>0){if(this.paginaSeleccionada + i >this.numeroPaginas){faltaderecha = faltaderecha +1;}
+          else{derecha.push(this.paginaSeleccionada + i);}}
+        }
+      }
+      console.log("falta izquierda = "+faltaizquierda);
+      console.log("falta derecha = "+faltaderecha);
+      if(faltaizquierda >0){
+        for(var i = 0;i<faltaizquierda;i++){var sgt = derecha[derecha.length-1] as number;if((sgt+1)<=this.numeroPaginas){derecha.push(sgt+1);}}
+      }
+      if(faltaderecha >0){
+        for(var i = 0;i<faltaderecha;i++){var ant = izquierda[0] as number ;if((ant-1)>0){console.log("agregando a izquierda");izquierda.unshift(ant-1);}}
+      }
+      this.izquierda = izquierda;this.derecha = derecha;
+    }else{
+      this.izquierda = new Array(); this.derecha = new Array();
+    }
+
+    
+  }
+
+
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
@@ -311,17 +366,22 @@ export class ArticulosbusquedaComponent implements OnInit {
     }
     this.funcionrepetir(temp);
   }
-  buscarporBanner(idbanner) {
+  buscarporBanner(idbanner, page) {
     document.getElementById('contenedorbusqueda').hidden = false;
     document.getElementById('noencontrado').hidden = true;
     this.articuloslista = new Array();
-    this.articulodetalleService.getArticulosBanner(idbanner).subscribe(res => {
-      this.articulodetalleService.Articulo = res as any[];
-      console.log(res);
-      var Respuesta = JSON.parse(JSON.stringify(res));
+    this.articulodetalleService.getArticulosBanner(idbanner,page).subscribe(res => {
+      this.mostrarBuscando = false;
+      var respuesta1 = res as any;
+      this.articulodetalleService.Articulo = respuesta1.articulos as any[];
+      this.totalResultados = respuesta1.total;
+        this.numeroPaginas = respuesta1.numpaginas;
+        this.calcularPaginacion();
+      //console.log(res);
+      var Respuesta = JSON.parse(JSON.stringify(respuesta1.articulos));
       if (Respuesta != "") {
         this.articuloslista = Respuesta;
-        this.numeroencontrados = Object.keys(res).length;
+        //this.numeroencontrados = Object.keys(respuesta1.articulos).length;
         this.temporallistaarti = Respuesta;
         this.temporallistaarti2 = Respuesta;
         this.listcategoraisfil();
@@ -361,22 +421,28 @@ export class ArticulosbusquedaComponent implements OnInit {
   }
   //fin
 
-  listararticate(id: string) {
+  listararticate(id: string, page: any) {
     document.getElementById('contenedorbusqueda').hidden = false;
     document.getElementById('noencontrado').hidden = true;
     this.articuloslista = new Array();
-    this.articulodetalleService.listarArticulo4(id)
+    this.articulodetalleService.listarArticulo4(id, page)
       .subscribe(res => {
-        this.articulodetalleService.Articulo = res as Articulo[];
-        var Respuesta = JSON.parse(JSON.stringify(res));
-        console.log(Respuesta);
-        if (Object.keys(res).length > 0) {
+        this.mostrarBuscando = false;
+        console.log(res);
+        var respuesta1 = res as any;
+        this.articulodetalleService.Articulo = respuesta1.articulos as Articulo[];
+        var Respuesta = JSON.parse(JSON.stringify(respuesta1.articulos));
+        //console.log(Respuesta);
+        this.totalResultados = respuesta1.total;
+        this.numeroPaginas = respuesta1.numpaginas;
+        this.calcularPaginacion();
+        if (Object.keys(respuesta1.articulos).length > 0) {
           if(id=='5c868b24f647673b0c262f4e'){
             Respuesta[0].sort(function (a, b) { return b.puntuacion - a.puntuacion });
             this.articuloslista = Respuesta[0];
-            console.log('articulo lista')
-            console.log(this.articuloslista)
-            console.log(this.articuloslista)
+            //console.log('articulo lista')
+            //console.log(this.articuloslista)
+            //console.log(this.articuloslista)
             this.numeroencontrados = Object.keys(res).length;
             this.temporallistaarti = Respuesta[0];
             this.temporallistaarti2 = Respuesta[0];
@@ -386,9 +452,9 @@ export class ArticulosbusquedaComponent implements OnInit {
           else{
             Respuesta.sort(function (a, b) { return b.puntuacion - a.puntuacion });
             this.articuloslista = Respuesta;
-            console.log('articulo lista')
-            console.log(this.articuloslista)
-            console.log(this.articuloslista)
+            //console.log('articulo lista')
+            //console.log(this.articuloslista)
+            //console.log(this.articuloslista)
             this.numeroencontrados = Object.keys(res).length;
             this.temporallistaarti = Respuesta;
             this.temporallistaarti2 = Respuesta;
@@ -402,38 +468,49 @@ export class ArticulosbusquedaComponent implements OnInit {
         }
       });
   }
-  listaraarticulos(pclave: string) {
+  listaraarticulos(pclave: string, page: any) {
     document.getElementById('contenedorbusqueda').hidden = false;
     document.getElementById('noencontrado').hidden = true;
     this.articuloslista = new Array();
-    this.articulodetalleService.listarArticulos(pclave)
+    this.articulodetalleService.listarArticulos(pclave, page)
       .subscribe(res => {
-        this.articulodetalleService.Articulo = res as Articulo[];
-        var Respuesta = JSON.parse(JSON.stringify(res));
+        this.mostrarBuscando = false;
+        var respuesta  = res as any;
+        console.log(respuesta);
+        this.totalResultados = respuesta.total;
+        this.numeroPaginas = respuesta.numpaginas;
+        this.calcularPaginacion();
+        this.articulodetalleService.Articulo = respuesta.articulos as Articulo[];
+        var Respuesta = JSON.parse(JSON.stringify(respuesta.articulos));
         if (Respuesta != "") {
           Respuesta.sort(function (a, b) { return b.puntuacion - a.puntuacion });
           this.articuloslista = Respuesta;
-          this.numeroencontrados = Object.keys(res).length;
+          this.numeroencontrados = Object.keys(respuesta.articulos).length;
           this.temporallistaarti = Respuesta;
           this.temporallistaarti2 = Respuesta;
           this.listcategoraisfil();
-          console.log(this.articuloslista);
+          //console.log(this.articuloslista);
         }
         else {
-          this.temprecuperarmarcas(pclave);
+          this.temprecuperarmarcas(pclave, page);
           // this.temprecuperarcategorias(pclave);
         }
       });
   }
-  listaraarticulos2(pclave: string) {
+  listaraarticulos2(pclave: string, page: any) {
     //  if (pclave != null || pclave != "" || pclave != undefined) {
-    this.articulodetalleService.listarArticulos2(pclave)
+    this.articulodetalleService.listarArticulos2(pclave, page)
       .subscribe(res => {
-        this.articulodetalleService.Articulo = res as Articulo[];
-        var Respuesta = JSON.parse(JSON.stringify(res));
+        this.mostrarBuscando = false;
+        var respuesta1 = res as any;
+        this.articulodetalleService.Articulo = respuesta1.articulos as Articulo[];
+        this.totalResultados = respuesta1.total;
+        this.numeroPaginas = respuesta1.numpaginas;
+        this.calcularPaginacion();
+        var Respuesta = JSON.parse(JSON.stringify(respuesta1.articulos));
         Respuesta.sort(function (a, b) { return b.puntuacion - a.puntuacion });
         this.articuloslista = Respuesta;
-        this.numeroencontrados = Object.keys(res).length;
+        //this.numeroencontrados = Object.keys(res).length;
         this.temporallistaarti = Respuesta;
         this.temporallistaarti2 = Respuesta;
         this.listcategoraisfil();
@@ -443,8 +520,8 @@ export class ArticulosbusquedaComponent implements OnInit {
     //  this.temprecuperarcategorias(pclave);
     // }
   }
-  listararticulos3(pclave: string) {
-    this.articulodetalleService.listarArticulo3(pclave)
+  listararticulos3(pclave: string, page: any) {
+    this.articulodetalleService.listarArticulo3(pclave, page)
       .subscribe(res => {
         this.articulodetalleService.Articulo = res as Articulo[];
         var Respuesta = JSON.parse(JSON.stringify(res));
@@ -455,29 +532,29 @@ export class ArticulosbusquedaComponent implements OnInit {
         this.temporallistaarti2 = Respuesta;
       });
   }
-  temprecuperarmarcas(pclave2: string) {
+  temprecuperarmarcas(pclave2: string, page: any) {
     this.marcaservice.listarMarcas(pclave2)
       .subscribe(res => {
         this.marcaservice.marca = res as Marca[];
         var Respuesta2 = JSON.parse(JSON.stringify(res));
         if (Respuesta2 != '') {
           for (var i = 0; i < Object.keys(res).length; i++) {
-            this.listaraarticulos2(Respuesta2[i]._id);
+            this.listaraarticulos2(Respuesta2[i]._id, page);
           }
         }
         else {
-          this.temprecuperarcategorias(pclave2);
+          this.temprecuperarcategorias(pclave2, page);
         }
       })
   }
-  temprecuperarcategorias(pclave3: string) {
+  temprecuperarcategorias(pclave3: string, page : any) {
     this.categoriaservice.listarcategoria(pclave3)
       .subscribe(res => {
         this.categoriaservice.categoria = res as Categoria[];
         var Respuesta3 = JSON.parse(JSON.stringify(res));
         if (Respuesta3 != '') {
           for (var i = 0; i < Object.keys(res).length; i++) {
-            this.listararticulos3(Respuesta3[i]._id);
+            this.listararticulos3(Respuesta3[i]._id, page);
           }
         }
         else {
@@ -642,7 +719,7 @@ export class ArticulosbusquedaComponent implements OnInit {
     }
   }
   cambiarprecio() {
-    this.listaraarticulos(this.palabrabusq);
+    //this.listaraarticulos(this.palabrabusq);
   }
   //fin cambiar precio
   //ordenar

@@ -1,5 +1,5 @@
 import { ArticulosbusquedaComponent } from './../articulosbusqueda/articulosbusqueda.component';
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener,Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { Categoria } from './categoria';
 import { CategoriaService } from './categoria.service';
 import { Constantes } from '../constantes';
@@ -11,12 +11,14 @@ import { FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { comunicacionService } from '../comunicacion.service';
+import { MatDialog } from '@angular/material';
+import { DialogCategoriasComponent } from '../dialog-categorias/dialog-categorias.component';
 //import {CategoriaService} from '../categoria/categoria.service';
 declare var $: any;
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css'],
+  styleUrls: ['./menu.component2.css'],
   providers: [UsuarioService]
 })
 export class MenuComponent implements OnInit {
@@ -40,8 +42,22 @@ export class MenuComponent implements OnInit {
   nomostrarbusquedap = true;
   categorias = new Array();
   usuarioLogueado :any = null;
+  mostrarCargandoDatosUsuario = false;
+  URL_IMAGENES = Constantes.URL_IMAGEN_SM ;
+  @Output() public sidenavToggle = new EventEmitter();
 
-  constructor(public categoriaService: CategoriaService,public router: Router, public servicioapoyo:ServicioapoyoService, public usuarioService : UsuarioService, public comService: comunicacionService) {
+  //ToolBars
+  @ViewChild('search_input') searchInput: ElementRef;
+  @ViewChild('searchtoolbar') set userContent(element) {
+    if (element) {
+       this.searchInput.nativeElement.focus();
+    }
+  }
+  showNormalToolbar = true;
+
+  
+
+  constructor(public categoriaService: CategoriaService,public router: Router, public servicioapoyo:ServicioapoyoService, public usuarioService : UsuarioService, public comService: comunicacionService,public dialog: MatDialog) {
     
     this.catsubscription = this.comService.getCategorias()
     .subscribe(cat =>{
@@ -88,13 +104,52 @@ export class MenuComponent implements OnInit {
     //fin auto comple
     $(window).on("resize", this.resize);
   }
+  /* NUEVO CODIGO*/
+  openDialogCategorias(){
+    var datos = {option: "simple"}
+    const dialogRef = this.dialog.open(DialogCategoriasComponent, {
+      width: '99%',
+      height: '80%',
+      data: datos ,
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+       console.log("cERRO DIALOG CATEGORIAS")
+      }else{
+        console.log("CANCELO");
+      }
+    });
+  }
+
+  public onToggleSidenav = () => {
+    this.sidenavToggle.emit();
+  }
+  public openToolBarSearch(){
+    this.showNormalToolbar = false; 
+    
+    
+  }
+  public focusInputSearch(){
+    this.searchInput.nativeElement.focus();
+  }
+  public closeToolBarSearch(){
+    this.showNormalToolbar = true; 
+  }
+
+  public iraHome(){
+    this.router.navigate(['/']);
+  }
+
+/*=========================================================== */
+
   obteniendocategorias = false;
 
   obtenerCategorias(){
-    console.log("Encima de categorias");
+    //console.log("Encima de categorias");
     if(!this.categoriaService.categorias && !this.obteniendocategorias){
       this.obteniendocategorias = true;      
-      console.log("OBTENIENDO CATEGORIAS");
+      //console.log("OBTENIENDO CATEGORIAS");
       this.categoriaService.getSubCategorias("root").subscribe( res => {
         this.categoriaService.categorias = res as Categoria[];
         this.categoriaService.categoriaSeleccionada = this.categoriaService.categorias[0];
@@ -105,15 +160,6 @@ export class MenuComponent implements OnInit {
       this.comService.enviarCategorias(this.categoriaService.categorias);    
     }
     
-  }
-  abrirModal(){
-    var modal = document.getElementById("modalBusqueda");
-    modal.style.display = "block";
-    document.getElementById("buscarartpal2").focus();
-  }
-  cerrarModal(){
-    var modal = document.getElementById("modalBusqueda");
-    modal.style.display = "none";
   }
   enviarIdCategoria(id){
     this.comService.enviarIDCategoria(id);
@@ -213,11 +259,16 @@ export class MenuComponent implements OnInit {
   }
 
   getSesion(){
+    this.mostrarCargandoDatosUsuario = true;
+    this.nombreusuario = "";
     if(localStorage.getItem('session_token')){
-      console.log("SI ESTA LOGUEADO OBTENIENDO INFORMACION DEL USUARIO");
+      
+      //console.log("SI ESTA LOGUEADO OBTENIENDO INFORMACION DEL USUARIO");
       this.usuarioService.getUsuario().subscribe( res => {
+        this.mostrarCargandoDatosUsuario = false;
         var jres = JSON.parse(JSON.stringify(res));
         if (jres.status){   
+          
           var nombre = jres.data.nombres.split(" ")[0];
           this.nombreusuario = nombre.charAt(0).toUpperCase() + nombre.substr(1).toLowerCase(); 
           this.estaLogeado = true;
@@ -225,12 +276,16 @@ export class MenuComponent implements OnInit {
           this.usuarioLogueado = jres.data;
           this.comService.enviarUsuario(jres.data);
         } else {
+          this.nombreusuario = "Identificate";
           this.estaLogeado = false;
           this.comService.enviarUsuario(null);
         }
       });
     }else{
-      console.log("NO SE INICIO SESION");
+      this.nombreusuario = "Identificate";
+
+      this.mostrarCargandoDatosUsuario = false;
+      //console.log("NO SE INICIO SESION");
       this.estaLogeado = false;
       this.comService.enviarUsuario(null);
     }    
@@ -266,10 +321,10 @@ export class MenuComponent implements OnInit {
     //this.actualizarcomponente();
     this.pclave2=(document.getElementById('buscarartpal') as HTMLInputElement).value;//(<HTMLInputElement>document.getElementById("buscarartpal")).value;//(document.getElementsByName('buscarartpal')[0] as HTMLInputElement).value;//
     if(event.key=="Enter"){
-      this.cerrarModal();
+      //this.cerrarModal();
     // this.router.navigate(['busqueda/'+this.pclave2]);
     //this.bus(this.pclave2);
-     this.router.navigateByUrl('busqueda/palclav/'+this.pclave2);
+     this.router.navigateByUrl('busqueda/palclav/'+this.pclave2+'/1');
      this.enviarPalabraClave();
      //this.actualizarcomponente(this.pclave2);
      
@@ -283,10 +338,10 @@ export class MenuComponent implements OnInit {
     //this.actualizarcomponente();
     this.pclave2=(document.getElementById('buscarartpal2') as HTMLInputElement).value;//(<HTMLInputElement>document.getElementById("buscarartpal")).value;//(document.getElementsByName('buscarartpal')[0] as HTMLInputElement).value;//
     if(event.key=="Enter"){
-      this.cerrarModal();
+      //this.cerrarModal();
     // this.router.navigate(['busqueda/'+this.pclave2]);
     //this.bus(this.pclave2);
-     this.router.navigateByUrl('busqueda/palclav/'+this.pclave2);
+     this.router.navigateByUrl('busqueda/palclav/'+this.pclave2+'/1');
      this.enviarPalabraClave();
      //this.actualizarcomponente(this.pclave2);
      
@@ -306,7 +361,7 @@ export class MenuComponent implements OnInit {
     var tipoplan='ALTA';
     var cuotas='0'; 
     document.getElementById("buscarartpal2").blur();
-    this.cerrarModal();
+    //this.cerrarModal();
 
     this.pclave2=(<HTMLInputElement>document.getElementById("buscarartpal")).value;
      var clave3 = (<HTMLInputElement>document.getElementById("buscarartpal2")).value;
@@ -319,13 +374,13 @@ export class MenuComponent implements OnInit {
       
       // this.actualizarcomponente(this.pclave2);
       
-      this.router.navigate(['busqueda/palclav/'+this.pclave2]);
+      this.router.navigate(['busqueda/palclav/'+this.pclave2+'/1']);
       //alert('busqueda/'+this.pclave2);
 //      this.router.navigateByUrl('busqueda/'+this.pclave2);
     }
     else{
       if(clave3 != ""){
-        this.router.navigate(['busqueda/palclav/'+clave3]);
+        this.router.navigate(['busqueda/palclav/'+clave3+'/1']);
       }else{
         this.router.navigate(['busqueda/palclav/celulares']);
       }
@@ -338,7 +393,7 @@ export class MenuComponent implements OnInit {
   }
   busquedacat(id:string){
     var valor="cat/"+id;
-    this.router.navigate(['busqueda/palclav/'+valor]);
+    this.router.navigate(['busqueda/palclav/'+valor+'/1']);
   }
   public actualizarcomponente(dat:string){
     this.servicioapoyo.actualizarpag(dat);

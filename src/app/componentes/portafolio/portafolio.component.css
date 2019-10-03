@@ -73,7 +73,7 @@
   cursor: pointer;
 }
 .carusel-grande{
-  width: 95%;
+  width: 100%;
   height: auto;
   display: flex;
   justify-content: center;
@@ -137,6 +137,8 @@
   line-height: 36px;
   font-size: 12px;
   background-color: #df3b3b;
+  top:15px;
+  left: 15px;
 }
 .item-marca{
   display:flex;
@@ -319,6 +321,7 @@
   }
   .simple-card {
     width: 193px;
+    height: 305px;
   }
   .carousel-ofertas-peque{
     display: none;
